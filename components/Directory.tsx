@@ -16,7 +16,7 @@ type AngelRow = {
   _id: string;
   name: string;
   company: string;
-  status: Filter extends "all" ? never : Exclude<Filter, "all">;
+  status: Exclude<Filter, "all">;
   statusLabel: string;
   checks: number;
   linkedin?: string;
@@ -32,16 +32,27 @@ const FILTERS: { id: Filter; label: string }[] = [
 
 const hasConvex = Boolean(process.env.NEXT_PUBLIC_CONVEX_URL);
 
-export default function Directory() {
+function SetupNote() {
+  return (
+    <div className="rounded-lg border border-line bg-white/50 p-6 text-sm leading-6 text-mute">
+      Convex is not linked yet. From this repo run{" "}
+      <code className="rounded bg-chip px-1.5 py-0.5 text-ink">npx convex dev</code>
+      , create or select a project named <span className="text-ink">founder-angels</span>,
+      then{" "}
+      <code className="rounded bg-chip px-1.5 py-0.5 text-ink">npx convex run seed:load</code>
+      . That writes <code className="rounded bg-chip px-1.5 py-0.5 text-ink">NEXT_PUBLIC_CONVEX_URL</code>{" "}
+      into <code className="rounded bg-chip px-1.5 py-0.5 text-ink">.env.local</code>.
+    </div>
+  );
+}
+
+function DirectoryLive() {
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
   const status = filter === "all" ? undefined : filter;
 
-  const angels = useQuery(
-    api.angels.list,
-    hasConvex ? { status, search } : "skip",
-  ) as AngelRow[] | undefined;
-  const counts = useQuery(api.angels.counts, hasConvex ? {} : "skip") as
+  const angels = useQuery(api.angels.list, { status, search }) as AngelRow[] | undefined;
+  const counts = useQuery(api.angels.counts, {}) as
     | {
         all: number;
         active_angel: number;
@@ -56,20 +67,6 @@ export default function Directory() {
       return id === "all" ? counts.all : counts[id];
     };
   }, [counts]);
-
-  if (!hasConvex) {
-    return (
-      <div className="rounded-lg border border-line bg-white/50 p-6 text-sm leading-6 text-mute">
-        Convex is not linked yet. From this repo run{" "}
-        <code className="rounded bg-chip px-1.5 py-0.5 text-ink">npx convex dev</code>
-        , create or select a project named <span className="text-ink">founder-angels</span>,
-        then{" "}
-        <code className="rounded bg-chip px-1.5 py-0.5 text-ink">npx convex run seed:load</code>
-        . That writes <code className="rounded bg-chip px-1.5 py-0.5 text-ink">NEXT_PUBLIC_CONVEX_URL</code>{" "}
-        into <code className="rounded bg-chip px-1.5 py-0.5 text-ink">.env.local</code>.
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -194,4 +191,11 @@ export default function Directory() {
       </div>
     </div>
   );
+}
+
+export default function Directory() {
+  if (!hasConvex) {
+    return <SetupNote />;
+  }
+  return <DirectoryLive />;
 }
