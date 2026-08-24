@@ -6,6 +6,23 @@ import { useMemo, useState } from "react";
 
 type Filter = "all" | "active_angel" | "occasional_angel" | "one_disclosed_investment";
 
+type Investment = {
+  company: string;
+  url?: string;
+  year?: string;
+};
+
+type AngelRow = {
+  _id: string;
+  name: string;
+  company: string;
+  status: Filter extends "all" ? never : Exclude<Filter, "all">;
+  statusLabel: string;
+  checks: number;
+  linkedin?: string;
+  investments: Investment[];
+};
+
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "All" },
   { id: "active_angel", label: "Active" },
@@ -23,8 +40,15 @@ export default function Directory() {
   const angels = useQuery(
     api.angels.list,
     hasConvex ? { status, search } : "skip",
-  );
-  const counts = useQuery(api.angels.counts, hasConvex ? {} : "skip");
+  ) as AngelRow[] | undefined;
+  const counts = useQuery(api.angels.counts, hasConvex ? {} : "skip") as
+    | {
+        all: number;
+        active_angel: number;
+        occasional_angel: number;
+        one_disclosed_investment: number;
+      }
+    | undefined;
 
   const countFor = useMemo(() => {
     return (id: Filter) => {
@@ -113,7 +137,7 @@ export default function Directory() {
                 </td>
               </tr>
             ) : (
-              angels.map((angel) => (
+              angels.map((angel: AngelRow) => (
                 <tr
                   key={angel._id}
                   className="border-b border-line/80 last:border-0 hover:bg-white/60"
@@ -144,7 +168,7 @@ export default function Directory() {
                       {angel.investments.length === 0 ? (
                         <span className="text-mute">—</span>
                       ) : (
-                        angel.investments.map((inv, i) =>
+                        angel.investments.map((inv: Investment, i: number) =>
                           inv.url ? (
                             <a
                               key={`${inv.company}-${i}`}
