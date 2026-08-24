@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background: #f7f4ee;
+  color: #1c1917;
+}
+
+body {
+  font-feature-settings: "ss01" on, "cv11" on;
+}
+
+::selection {
+  background: #e8e0d2;
+}

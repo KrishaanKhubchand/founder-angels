@@ -1,0 +1,4 @@
+Install deps, then convex dev, then next dev.
+Seed: convex run seed:load
+Env: NEXT_PUBLIC_CONVEX_URL
+Do not replace the existing static Vercel project until this app works. Import GitHub as a new project. Public, no Vercel auth.
