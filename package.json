@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "convex run seed:load"
+    "seed": "convex run seed:load",
+    "seed:ev": "convex run seedEv:load"
   },
   "dependencies": {
     "convex": "^1.25.4",

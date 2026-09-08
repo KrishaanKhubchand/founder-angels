@@ -13,6 +13,15 @@ export default function HomePage() {
           count. No login, no emails — names, companies, classification, and public
           investment sources only.
         </p>
+        <p className="mt-2 text-[14px] text-mute">
+          Also see:{" "}
+          <a
+            href="/ev"
+            className="text-ink underline decoration-line underline-offset-4 hover:decoration-ink"
+          >
+            Emergent Ventures grantees
+          </a>
+        </p>
       </header>
       <Directory />
     </main>
