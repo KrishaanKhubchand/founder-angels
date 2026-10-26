@@ -57,8 +57,8 @@ function EvDirectoryLive() {
   const [search, setSearch] = useState("");
   const category = filter === "all" ? undefined : filter;
 
-  const people = useQuery(api.ev.list, { category, search }) as EvPersonRow[] | undefined;
-  const counts = useQuery(api.ev.counts, {}) as
+  const people = useQuery(api.evPeople.list, { category, search }) as EvPersonRow[] | undefined;
+  const counts = useQuery(api.evPeople.counts, {}) as
     | {
         all: number;
         founder_angel: number;
